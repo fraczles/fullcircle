@@ -37,7 +37,16 @@
       "spec": "Demonology",
       "spec2": "",
       "role": "RANGED",
-      "profs": [],
+      "profs": [
+        {
+          "n": "Tailoring",
+          "s": null
+        },
+        {
+          "n": "Engineering",
+          "s": null
+        }
+      ],
       "rank": "Officer",
       "status": "Raider",
       "verified": false,
@@ -52,7 +61,16 @@
       "spec": "Protection",
       "spec2": "",
       "role": "TANK",
-      "profs": [],
+      "profs": [
+        {
+          "n": "Blacksmithing",
+          "s": null
+        },
+        {
+          "n": "Mining",
+          "s": null
+        }
+      ],
       "rank": "Member",
       "status": "Raider",
       "verified": false,
@@ -67,7 +85,16 @@
       "spec": "Restoration",
       "spec2": "",
       "role": "HEALER",
-      "profs": [],
+      "profs": [
+        {
+          "n": "Leatherworking",
+          "s": null
+        },
+        {
+          "n": "Skinning",
+          "s": null
+        }
+      ],
       "rank": "Member",
       "status": "Raider",
       "verified": false,
@@ -82,7 +109,16 @@
       "spec": "Beast Mastery",
       "spec2": "",
       "role": "RANGED",
-      "profs": [],
+      "profs": [
+        {
+          "n": "Engineering",
+          "s": null
+        },
+        {
+          "n": "Mining",
+          "s": null
+        }
+      ],
       "rank": "Member",
       "status": "Raider",
       "verified": false,
@@ -112,7 +148,16 @@
       "spec": "Protection",
       "spec2": "",
       "role": "MELEE",
-      "profs": [],
+      "profs": [
+        {
+          "n": "Alchemy",
+          "s": null
+        },
+        {
+          "n": "Engineering",
+          "s": null
+        }
+      ],
       "rank": "Member",
       "status": "Raider",
       "verified": false,
@@ -142,7 +187,16 @@
       "spec": "Feral (Bear)",
       "spec2": "",
       "role": "TANK",
-      "profs": [],
+      "profs": [
+        {
+          "n": "Alchemy",
+          "s": null
+        },
+        {
+          "n": "Herbalism",
+          "s": null
+        }
+      ],
       "rank": "Member",
       "status": "Raider",
       "verified": false,
@@ -247,7 +301,12 @@
       "spec": "Holy",
       "spec2": "",
       "role": "HEALER",
-      "profs": [],
+      "profs": [
+        {
+          "n": "Mining",
+          "s": null
+        }
+      ],
       "rank": "Member",
       "status": "Raider",
       "verified": false,
