@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FULL CIRCLE Guild Roster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: one column — header, composition summary, roster table, crafter lookup, raids. Single dark theme by choice (class colors need a dark ground). */
+:root {
+  color-scheme: dark;
+  --bg: #0e1320;
+  --panel: #161d2e;
+  --line: #26304a;
+  --ink: #e6e9f2;
+  --muted: #8d97b3;
+  --gold: #e2b85c;
+  --alliance: #3d6fd6;
+  --warn: #e8a33d;
+  --font-display: "Cinzel", Georgia, serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r: 8px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.45; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 28px 20px 64px; display: grid; gap: 28px; }
+
+header.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); padding-bottom: 18px; }
+.crest { display: flex; align-items: center; gap: 14px; }
+.crest svg { flex: none; }
+h1 { font-family: var(--font-display); font-size: 34px; letter-spacing: .08em; margin: 0; color: var(--gold); text-wrap: balance; }
+.sub { color: var(--muted); font-size: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+.sub b { color: var(--ink); font-weight: 500; }
+h2 { font-family: var(--font-display); font-size: 18px; letter-spacing: .06em; margin: 0 0 12px; color: var(--ink); }
+
+.btn { text-decoration: none; display: inline-block; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 7px 14px; cursor: pointer; }
+.btn:hover { border-color: var(--gold); }
+.btn.primary { background: var(--gold); color: #1a1408; border-color: var(--gold); font-weight: 600; }
+.btn.danger { color: #ff8a8a; }
+.btn[hidden] { display: none; }
+
+/* composition */
+.comp { display: grid; grid-template-columns: repeat(4, 1fr) 2fr; gap: 12px; }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+.tile .k { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+.tile .v { font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tile .v small { font-size: 13px; color: var(--muted); font-weight: 400; }
+.bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin: 8px 0 10px; background: var(--line); }
+.bar span { display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--muted); }
+.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; }
+
+/* roster */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.filters input, .filters select, dialog input, dialog select { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 7px 10px; }
+.filters input { flex: 1 1 200px; }
+.tablebox { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); }
+table { width: 100%; border-collapse: collapse; min-width: 760px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 500; background: var(--panel); cursor: pointer; user-select: none; white-space: nowrap; }
+th[aria-sort="ascending"]::after { content: " ▲"; color: var(--gold); }
+th[aria-sort="descending"]::after { content: " ▼"; color: var(--gold); }
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: #121a2b; }
+tr.dim td { opacity: .6; }
+.name { font-weight: 600; }
+.name.tbd { color: var(--muted); font-weight: 400; font-style: italic; }
+.handle { font-size: 12px; color: var(--muted); }
+.cls { font-weight: 600; }
+.guess { display: inline-block; margin-left: 6px; font-size: 11px; padding: 0 6px; border-radius: 9px; border: 1px solid var(--warn); color: var(--warn); cursor: help; }
+.pill { display: inline-block; font-size: 12px; padding: 1px 9px; border-radius: 10px; border: 1px solid var(--line); white-space: nowrap; }
+.pill.TANK { border-color: #6c8fd8; color: #9fb8ee; }
+.pill.HEALER { border-color: #5fbf7f; color: #8fdca8; }
+.pill.MELEE { border-color: #d07a5b; color: #eba58b; }
+.pill.RANGED { border-color: #b08ae0; color: #cdb2f0; }
+.pill.Bench, .pill.Tentative { border-color: var(--warn); color: var(--warn); }
+.profs { font-size: 13px; color: var(--muted); }
+.profs b { color: var(--ink); font-weight: 500; }
+.empty { color: var(--muted); padding: 18px 12px; }
+td.act { width: 1%; white-space: nowrap; }
+
+/* crafters */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.chip { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 4px 12px; cursor: pointer; font-size: 13px; }
+.chip[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+.chip .n { color: var(--muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.crafters { display: flex; flex-wrap: wrap; gap: 8px; }
+.crafter { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 8px 12px; }
+
+/* raids */
+.raids { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.raid { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--alliance); border-radius: var(--r); padding: 12px 14px; display: grid; gap: 4px; }
+.raid .rn { font-family: var(--font-display); font-weight: 700; letter-spacing: .04em; }
+.raid .rs { color: var(--muted); font-size: 13px; }
+
+
+@media (max-width: 760px) {
+  .comp { grid-template-columns: repeat(2, 1fr); }
+  .comp .tile.classes { grid-column: 1 / -1; }
+  .raids { grid-template-columns: 1fr; }
+  h1 { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <header class="top">
+    <div class="crest">
+      <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="21" fill="none" stroke="#e2b85c" stroke-width="3"/>
+        <circle cx="24" cy="24" r="13" fill="none" stroke="#3d6fd6" stroke-width="3"/>
+        <circle cx="24" cy="24" r="4" fill="#e2b85c"/>
+      </svg>
+      <div>
+        <h1 id="g-name"></h1>
+        <div class="sub" id="g-sub"></div>
+      </div>
+    </div>
+    <a class="btn" id="btn-edit" href="#">Edit roster (officers)</a>
+  </header>
+
+  <section aria-labelledby="h-comp">
+    <h2 id="h-comp">Raid composition</h2>
+    <div class="comp" id="comp"></div>
+  </section>
+
+  <section aria-labelledby="h-roster">
+    <h2 id="h-roster">Roster</h2>
+    <div class="filters">
+      <input id="f-q" type="search" placeholder="Search name, class, spec, profession" aria-label="Search roster">
+      <select id="f-role" aria-label="Filter by role"></select>
+      <select id="f-cls" aria-label="Filter by class"></select>
+      <select id="f-status" aria-label="Filter by status"></select>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead><tr id="thead"></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <p class="note" id="guess-note"></p>
+  </section>
+
+  <section aria-labelledby="h-craft">
+    <h2 id="h-craft">Who can craft it?</h2>
+    <div class="chips" id="prof-chips"></div>
+    <div class="crafters" id="crafters"></div>
+  </section>
+
+  <section aria-labelledby="h-raids">
+    <h2 id="h-raids">Raids</h2>
+    <div class="raids" id="raids"></div>
+  </section>
+
+</div>
+
+
+<script>
+const CLASS_COLORS = {
+  Druid: "#FF7C0A", Hunter: "#AAD372", Mage: "#3FC7EB", Paladin: "#F48CBA", Priest: "#FFFFFF",
+  Rogue: "#FFF468", Shaman: "#0070DD", Warlock: "#8788EE", Warrior: "#C69B6D",
+};
+const CLASSES = Object.keys(CLASS_COLORS);
+const SPECS = {
+  Druid: ["Balance", "Feral (Cat)", "Feral (Bear)", "Restoration"],
+  Hunter: ["Beast Mastery", "Marksmanship", "Survival"],
+  Mage: ["Arcane", "Fire", "Frost"],
+  Paladin: ["Holy", "Protection", "Retribution"],
+  Priest: ["Discipline", "Holy", "Shadow"],
+  Rogue: ["Assassination", "Combat", "Subtlety"],
+  Shaman: ["Elemental", "Enhancement", "Restoration"],
+  Warlock: ["Affliction", "Demonology", "Destruction"],
+  Warrior: ["Arms", "Fury", "Protection"],
+};
+const ROLES = { TANK: "Tank", HEALER: "Healer", MELEE: "Melee", RANGED: "Ranged" };
+const ROLE_KEYS = Object.keys(ROLES);
+const SPEC_ROLE = {
+  "Warrior/Protection": "TANK", "Paladin/Protection": "TANK", "Druid/Feral (Bear)": "TANK",
+  "Druid/Restoration": "HEALER", "Paladin/Holy": "HEALER", "Priest/Discipline": "HEALER", "Priest/Holy": "HEALER", "Shaman/Restoration": "HEALER",
+  "Priest/Shadow": "RANGED", "Druid/Balance": "RANGED", "Shaman/Elemental": "RANGED",
+};
+const RANGED_CLASSES = ["Hunter", "Mage", "Warlock"];
+const STATUSES = ["Raider", "Bench", "Tentative"];
+const ACTIVE_STATUS = "Raider";
+const RANKS = ["Guild Master", "Officer", "Raider", "Member", "Trial", "Alt"];
+const RACES = ["Human", "Dwarf", "Night Elf", "Gnome", "Skyborne"];
+const PRIMARY_PROFS = ["Alchemy", "Blacksmithing", "Enchanting", "Engineering", "Herbalism", "Leatherworking", "Mining", "Skinning", "Tailoring"];
+const SECONDARY_PROFS = ["Cooking", "First Aid", "Fishing"];
+const ALL_PROFS = [...PRIMARY_PROFS, ...SECONDARY_PROFS];
+const ANY = "";
+const GUESS_TIP = "Inferred from the Raid-Helper sign-up icon. Not yet confirmed.";
+
+// Set to your GitHub "user/repo" so officers get a direct edit link.
+const GITHUB_REPO = "fraczles/fullcircle";
+const ROSTER_FILE = "roster.json";
+let state = null;
+let sort = { key: "role", dir: 1 };
+let selectedProf = PRIMARY_PROFS[0];
+
+const $ = (id) => document.getElementById(id);
+const el = (tag, props = {}, ...kids) => {
+  const n = Object.assign(document.createElement(tag), props);
+  for (const k of kids) if (k != null) n.append(k);
+  return n;
+};
+const defaultRole = (cls, spec) => SPEC_ROLE[`${cls}/${spec}`] || (RANGED_CLASSES.includes(cls) ? "RANGED" : "MELEE");
+const displayName = (m) => m.ign || m.discord;
+
+function fillSelect(sel, items, { blank } = {}) {
+  sel.replaceChildren();
+  if (blank != null) sel.append(el("option", { value: ANY, textContent: blank }));
+  for (const it of items) {
+    const [value, label] = Array.isArray(it) ? it : [it, it];
+    sel.append(el("option", { value, textContent: label }));
+  }
+}
+
+/* ---------- render ---------- */
+function renderHeader() {
+  const g = state.guild;
+  $("g-name").textContent = g.name;
+  $("g-sub").replaceChildren(
+    el("span", {}, el("b", { textContent: g.faction })),
+    el("span", { textContent: `${g.region} · ${g.ruleset}` }),
+    el("span", { textContent: "World of Warcraft: Forever" }),
+  );
+}
+
+function renderComp() {
+  const active = state.members.filter(m => m.status === ACTIVE_STATUS);
+  const box = $("comp");
+  box.replaceChildren();
+  for (const r of ROLE_KEYS) {
+    const n = active.filter(m => m.role === r).length;
+    box.append(el("div", { className: "tile" },
+      el("div", { className: "k", textContent: ROLES[r] }),
+      el("div", { className: "v", textContent: n })));
+  }
+  const counts = CLASSES.map(c => [c, active.filter(m => m.cls === c).length]).filter(([, n]) => n);
+  const bar = el("div", { className: "bar", role: "img", ariaLabel: counts.map(([c, n]) => `${n} ${c}`).join(", ") });
+  for (const [c, n] of counts) bar.append(el("span", { style: `width:${(n / active.length) * 100}%;background:${CLASS_COLORS[c]}`, title: `${c}: ${n}` }));
+  const legend = el("div", { className: "legend" });
+  for (const [c, n] of counts) {
+    const i = el("i"); i.style.background = CLASS_COLORS[c];
+    legend.append(el("span", {}, i, `${c} ${n}`));
+  }
+  const benched = state.members.length - active.length;
+  const v = el("div", { className: "v", textContent: active.length });
+  if (benched) v.append(" ", el("small", { textContent: `+${benched} bench/tentative` }));
+  box.append(el("div", { className: "tile classes" },
+    el("div", { className: "k", textContent: "Raiders by class" }), v, bar, legend));
+}
+
+const COLUMNS = [
+  { key: "name", label: "Character", val: m => displayName(m).toLowerCase() },
+  { key: "cls", label: "Class / Spec", val: m => m.cls + m.spec },
+  { key: "role", label: "Role", val: m => ROLE_KEYS.indexOf(m.role) },
+  { key: "profs", label: "Professions", val: m => m.profs.map(p => p.n).join() },
+  { key: "rank", label: "Rank", val: m => RANKS.indexOf(m.rank) },
+  { key: "status", label: "Status", val: m => STATUSES.indexOf(m.status) },
+];
+
+function renderHead() {
+  const tr = $("thead");
+  tr.replaceChildren();
+  for (const c of COLUMNS) {
+    const th = el("th", { textContent: c.label, scope: "col", tabIndex: 0 });
+    if (sort.key === c.key) th.setAttribute("aria-sort", sort.dir > 0 ? "ascending" : "descending");
+    const go = () => { sort = { key: c.key, dir: sort.key === c.key ? -sort.dir : 1 }; renderHead(); renderRows(); };
+    th.onclick = go;
+    th.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } };
+    tr.append(th);
+  }
+}
+
+function matches(m) {
+  const q = $("f-q").value.trim().toLowerCase();
+  const role = $("f-role").value, cls = $("f-cls").value, st = $("f-status").value;
+  if (role && m.role !== role) return false;
+  if (cls && m.cls !== cls) return false;
+  if (st && m.status !== st) return false;
+  if (!q) return true;
+  const hay = [m.ign, m.discord, m.cls, m.spec, m.spec2, m.race, m.rank, m.note, ...m.profs.map(p => p.n)].join(" ").toLowerCase();
+  return hay.includes(q);
+}
+
+function renderRows() {
+  const col = COLUMNS.find(c => c.key === sort.key);
+  const rows = state.members.filter(matches).sort((a, b) => {
+    const x = col.val(a), y = col.val(b);
+    const d = x < y ? -1 : x > y ? 1 : 0;
+    return d ? d * sort.dir : displayName(a).localeCompare(displayName(b));
+  });
+  const tb = $("tbody");
+  tb.replaceChildren();
+  if (!rows.length) {
+    tb.append(el("tr", {}, el("td", { className: "empty", colSpan: COLUMNS.length + 1, textContent: "No members match these filters." })));
+  }
+  for (const m of rows) {
+    const nameCell = el("td", {},
+      el("div", { className: m.ign ? "name" : "name tbd", textContent: m.ign || "Character TBD" }),
+      el("div", { className: "handle", textContent: [m.discord && `@${m.discord}`, m.race].filter(Boolean).join(" · ") }));
+    const clsSpan = el("span", { className: "cls", textContent: m.cls });
+    clsSpan.style.color = CLASS_COLORS[m.cls];
+    const specTxt = [m.spec, m.spec2].filter(Boolean).join(" / ");
+    const clsCell = el("td", {}, clsSpan, el("div", { className: "handle", textContent: specTxt }));
+    if (!m.verified) clsCell.firstChild.after(el("span", { className: "guess", textContent: "?", title: GUESS_TIP }));
+    const profCell = el("td", { className: "profs" });
+    if (m.profs.length) m.profs.forEach((p, i) => {
+      if (i) profCell.append(", ");
+      profCell.append(el("b", { textContent: p.n }), p.s ? ` ${p.s}` : "");
+    });
+    else profCell.textContent = "–";
+    const tr = el("tr", { className: m.status === ACTIVE_STATUS ? "" : "dim" },
+      nameCell, clsCell,
+      el("td", {}, el("span", { className: `pill ${m.role}`, textContent: ROLES[m.role] })),
+      profCell,
+      el("td", { textContent: m.rank }),
+      el("td", {}, el("span", { className: `pill ${m.status}`, textContent: m.status })));
+    if (m.note) nameCell.append(el("div", { className: "handle", textContent: m.note }));
+    tb.append(tr);
+  }
+  const guesses = state.members.filter(m => !m.verified).length;
+  $("guess-note").textContent = guesses ? `? = spec inferred from the sign-up sheet (${guesses} to confirm). Character names are TBD until officers fill them in.` : "";
+}
+
+function renderCrafters() {
+  const chips = $("prof-chips");
+  chips.replaceChildren();
+  for (const p of ALL_PROFS) {
+    const n = state.members.filter(m => m.profs.some(x => x.n === p)).length;
+    const c = el("button", { className: "chip", type: "button" }, p, el("span", { className: "n", textContent: n }));
+    c.setAttribute("aria-pressed", String(p === selectedProf));
+    c.onclick = () => { selectedProf = p; renderCrafters(); };
+    chips.append(c);
+  }
+  const list = state.members
+    .map(m => ({ m, p: m.profs.find(x => x.n === selectedProf) }))
+    .filter(x => x.p)
+    .sort((a, b) => (b.p.s || 0) - (a.p.s || 0));
+  const box = $("crafters");
+  box.replaceChildren();
+  if (!list.length) { box.append(el("p", { className: "note", textContent: `No ${selectedProf} listed yet.` })); return; }
+  for (const { m, p } of list) {
+    const nm = el("span", { className: "name", textContent: displayName(m) });
+    nm.style.color = CLASS_COLORS[m.cls];
+    box.append(el("div", { className: "crafter" }, nm, el("span", { className: "handle", textContent: p.s ? ` ${p.s}` : "" })));
+  }
+}
+
+function renderRaids() {
+  const box = $("raids");
+  box.replaceChildren();
+  for (const r of state.raids) {
+    box.append(el("div", { className: "raid" },
+      el("span", { className: "rn", textContent: r.name }),
+      el("span", { className: "rs", textContent: `${r.size}-player` }),
+      el("span", {}, el("span", { className: "pill", textContent: r.status }))));
+  }
+}
+
+function renderAll() {
+  renderHeader(); renderComp(); renderHead(); renderRows(); renderCrafters(); renderRaids();
+}
+
+/* ---------- wire up ---------- */
+fillSelect($("f-role"), ROLE_KEYS.map(k => [k, ROLES[k]]), { blank: "All roles" });
+fillSelect($("f-cls"), CLASSES, { blank: "All classes" });
+fillSelect($("f-status"), STATUSES, { blank: "All statuses" });
+["f-q", "f-role", "f-cls", "f-status"].forEach(id => $(id).addEventListener("input", renderRows));
+$("btn-edit").href = `https://github.com/${GITHUB_REPO}/edit/main/${ROSTER_FILE}`;
+
+fetch(ROSTER_FILE, { cache: "no-cache" })
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(d => { state = d; renderAll(); })
+  .catch(() => { $("tbody").innerHTML = '<tr><td class="empty" colspan="6">Could not load roster.json. Open this page from GitHub Pages or a local server.</td></tr>'; });
+</script>
+</body>
+</html>
