@@ -67,6 +67,11 @@ th[aria-sort="descending"]::after { content: " ▼"; color: var(--gold); }
 tr:last-child td { border-bottom: 0; }
 tbody tr:hover { background: #121a2b; }
 tr.dim td { opacity: .6; }
+.who { display: flex; align-items: center; gap: 10px; }
+.portrait { flex: none; width: 40px; height: 40px; border-radius: 8px; border: 2px solid var(--line); background: var(--panel); display: flex; align-items: center; justify-content: center; font-weight: 600; overflow: hidden; }
+.portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.specicon { width: 16px; height: 16px; border-radius: 3px; vertical-align: -3px; margin-right: 5px; }
+footer.legal { color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 14px; }
 .name { font-weight: 600; }
 .name.tbd { color: var(--muted); font-weight: 400; font-style: italic; }
 .handle { font-size: 12px; color: var(--muted); }
@@ -157,6 +162,7 @@ td.act { width: 1%; white-space: nowrap; }
     <div class="raids" id="raids"></div>
   </section>
 
+  <footer class="legal">World of Warcraft and related images are trademarks and copyrights of Blizzard Entertainment. Images load from Blizzard's API. This site is not affiliated with or endorsed by Blizzard.</footer>
 </div>
 
 
@@ -198,7 +204,26 @@ const GUESS_TIP = "Inferred from the Raid-Helper sign-up icon. Not yet confirmed
 // Set to your GitHub "user/repo" so officers get a direct edit link.
 const GITHUB_REPO = "fraczles/fullcircle";
 const ROSTER_FILE = "roster.json";
+const MEDIA_FILE = "media.json";
+const PORTRAIT_KEYS = ["avatar", "inset"];
 let state = null;
+let media = { classes: {}, specs: {}, characters: {} };
+
+// Character render → class icon → class-colored initial.
+function portrait(m) {
+  const box = el("div", { className: "portrait" });
+  box.style.borderColor = CLASS_COLORS[m.cls];
+  box.style.color = CLASS_COLORS[m.cls];
+  const char = media.characters[m.id];
+  const src = (char && PORTRAIT_KEYS.map(k => char[k]).find(Boolean)) || media.classes[m.cls];
+  const initial = () => box.replaceChildren(displayName(m).charAt(0).toUpperCase());
+  if (src) {
+    const img = el("img", { src, alt: "", loading: "lazy" });
+    img.onerror = initial;
+    box.append(img);
+  } else initial();
+  return box;
+}
 let sort = { key: "role", dir: 1 };
 let selectedProf = PRIMARY_PROFS[0];
 
@@ -302,13 +327,18 @@ function renderRows() {
     tb.append(el("tr", {}, el("td", { className: "empty", colSpan: COLUMNS.length + 1, textContent: "No members match these filters." })));
   }
   for (const m of rows) {
-    const nameCell = el("td", {},
+    const info = el("div", {},
       el("div", { className: m.ign ? "name" : "name tbd", textContent: m.ign || "Character TBD" }),
       el("div", { className: "handle", textContent: [m.discord && `@${m.discord}`, m.race].filter(Boolean).join(" · ") }));
+    const nameCell = el("td", {}, el("div", { className: "who" }, portrait(m), info));
     const clsSpan = el("span", { className: "cls", textContent: m.cls });
     clsSpan.style.color = CLASS_COLORS[m.cls];
     const specTxt = [m.spec, m.spec2].filter(Boolean).join(" / ");
-    const clsCell = el("td", {}, clsSpan, el("div", { className: "handle", textContent: specTxt }));
+    const specLine = el("div", { className: "handle" });
+    const specIcon = media.specs[`${m.cls}/${m.spec}`];
+    if (specIcon) specLine.append(el("img", { className: "specicon", src: specIcon, alt: "", loading: "lazy" }));
+    specLine.append(specTxt);
+    const clsCell = el("td", {}, clsSpan, specLine);
     if (!m.verified) clsCell.firstChild.after(el("span", { className: "guess", textContent: "?", title: GUESS_TIP }));
     const profCell = el("td", { className: "profs" });
     if (m.profs.length) m.profs.forEach((p, i) => {
@@ -322,7 +352,7 @@ function renderRows() {
       profCell,
       el("td", { textContent: m.rank }),
       el("td", {}, el("span", { className: `pill ${m.status}`, textContent: m.status })));
-    if (m.note) nameCell.append(el("div", { className: "handle", textContent: m.note }));
+    if (m.note) info.append(el("div", { className: "handle", textContent: m.note }));
     tb.append(tr);
   }
   const guesses = state.members.filter(m => !m.verified).length;
@@ -375,8 +405,9 @@ fillSelect($("f-status"), STATUSES, { blank: "All statuses" });
 ["f-q", "f-role", "f-cls", "f-status"].forEach(id => $(id).addEventListener("input", renderRows));
 $("btn-edit").href = `https://github.com/${GITHUB_REPO}/edit/main/${ROSTER_FILE}`;
 
-fetch(ROSTER_FILE, { cache: "no-cache" })
-  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+const getJson = (f) => fetch(f, { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+getJson(MEDIA_FILE).then(d => { media = { ...media, ...d }; if (state) renderAll(); }).catch(() => {});
+getJson(ROSTER_FILE)
   .then(d => { state = d; renderAll(); })
   .catch(() => { $("tbody").innerHTML = '<tr><td class="empty" colspan="6">Could not load roster.json. Open this page from GitHub Pages or a local server.</td></tr>'; });
 </script>

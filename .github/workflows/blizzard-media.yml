@@ -1,0 +1,39 @@
+name: Update Blizzard media
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 9 * * *"
+  push:
+    branches: [main]
+    paths: [roster.json]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blizzard-media
+  cancel-in-progress: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Fetch icons and portraits
+        env:
+          BNET_CLIENT_ID: ${{ secrets.BNET_CLIENT_ID }}
+          BNET_CLIENT_SECRET: ${{ secrets.BNET_CLIENT_SECRET }}
+        run: node scripts/fetch-media.mjs
+      - name: Commit media.json
+        run: |
+          git add media.json 2>/dev/null || exit 0
+          git diff --cached --quiet && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update Blizzard media"
+          git pull --rebase
+          git push

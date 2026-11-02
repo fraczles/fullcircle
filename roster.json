@@ -3,7 +3,12 @@
     "name": "FULL CIRCLE",
     "faction": "Alliance",
     "ruleset": "PvP",
-    "region": "NA"
+    "region": "NA",
+    "api": {
+      "region": "us",
+      "realmSlug": "",
+      "profileNamespace": ""
+    }
   },
   "raids": [
     {

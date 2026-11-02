@@ -39,3 +39,12 @@ Member fields:
 | `note` | Free text |
 
 Invalid JSON (missing comma, quote) breaks the page; GitHub's editor flags most mistakes.
+
+## Blizzard images (icons + portraits)
+
+`.github/workflows/blizzard-media.yml` runs daily, on every `roster.json` change, and on demand (**Actions → Update Blizzard media → Run workflow**). It calls the Blizzard API with repo secrets `BNET_CLIENT_ID` / `BNET_CLIENT_SECRET` and writes image URLs to `media.json`. Images load from Blizzard's servers.
+
+- **Class/spec icons**: automatic.
+- **Character portraits**: need `ign` filled in for the member, plus `guild.api.realmSlug` in `roster.json` (lowercase, hyphens, e.g. `my-realm`). If WoW Forever uses its own API namespace, set `guild.api.profileNamespace`; otherwise the script tries the Classic and retail ones.
+- Portrait fallback: character render → class icon → class-colored initial.
+- Check the workflow log's `note:` lines to see what was skipped.
