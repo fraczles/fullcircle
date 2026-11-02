@@ -143,9 +143,9 @@
       "id": "m6",
       "discord": "Jed",
       "ign": "",
-      "cls": "Paladin",
+      "cls": "Shaman",
       "race": "",
-      "spec": "Protection",
+      "spec": "Enhancement",
       "spec2": "",
       "role": "MELEE",
       "profs": [
@@ -160,7 +160,7 @@
       ],
       "rank": "Member",
       "status": "Raider",
-      "verified": false,
+      "verified": true,
       "note": ""
     },
     {
