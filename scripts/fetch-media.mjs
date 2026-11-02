@@ -25,7 +25,9 @@ const PROFILE_NAMESPACE_CANDIDATES = (region) => [
   `profile-${region}`,
 ];
 
-const { BNET_CLIENT_ID, BNET_CLIENT_SECRET } = process.env;
+// Trim: pasted secrets often carry stray spaces or newlines.
+const BNET_CLIENT_ID = (process.env.BNET_CLIENT_ID || "").trim();
+const BNET_CLIENT_SECRET = (process.env.BNET_CLIENT_SECRET || "").trim();
 if (!BNET_CLIENT_ID || !BNET_CLIENT_SECRET) {
   console.error("Missing BNET_CLIENT_ID / BNET_CLIENT_SECRET.");
   process.exit(1);
@@ -49,7 +51,7 @@ async function getToken() {
     },
     body: "grant_type=client_credentials",
   });
-  if (res.status !== HTTP_OK) throw new Error(`Token request failed: HTTP ${res.status}`);
+  if (res.status !== HTTP_OK) throw new Error(`Token request failed: HTTP ${res.status}. Check BNET_CLIENT_ID / BNET_CLIENT_SECRET repo secrets.`);
   return (await res.json()).access_token;
 }
 
