@@ -7,6 +7,7 @@
     "Priest": "https://render.worldofwarcraft.com/us/icons/56/626004.jpg",
     "Paladin": "https://render.worldofwarcraft.com/us/icons/56/626003.jpg",
     "Rogue": "https://render.worldofwarcraft.com/us/icons/56/626005.jpg",
+    "Shaman": "https://render.worldofwarcraft.com/us/icons/56/626006.jpg",
     "Warrior": "https://render.worldofwarcraft.com/us/icons/56/626008.jpg"
   },
   "specs": {
@@ -32,6 +33,9 @@
     "Rogue/Assassination": "https://render.worldofwarcraft.com/us/icons/56/236270.jpg",
     "Rogue/Outlaw": "https://render.worldofwarcraft.com/us/icons/56/236286.jpg",
     "Rogue/Subtlety": "https://render.worldofwarcraft.com/us/icons/56/132320.jpg",
+    "Shaman/Elemental": "https://render.worldofwarcraft.com/us/icons/56/136048.jpg",
+    "Shaman/Enhancement": "https://render.worldofwarcraft.com/us/icons/56/237581.jpg",
+    "Shaman/Restoration": "https://render.worldofwarcraft.com/us/icons/56/136052.jpg",
     "Warrior/Arms": "https://render.worldofwarcraft.com/us/icons/56/132355.jpg",
     "Warrior/Fury": "https://render.worldofwarcraft.com/us/icons/56/132347.jpg",
     "Warrior/Protection": "https://render.worldofwarcraft.com/us/icons/56/132341.jpg",
@@ -43,5 +47,5 @@
   "notes": [
     "No realmSlug in roster.json; skipped character portraits."
   ],
-  "updated": "2026-11-02T17:23:31.320Z"
+  "updated": "2026-11-02T17:32:06.006Z"
 }
