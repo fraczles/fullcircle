@@ -1,0 +1,47 @@
+{
+  "classes": {
+    "Hunter": "https://render.worldofwarcraft.com/us/icons/56/626000.jpg",
+    "Warlock": "https://render.worldofwarcraft.com/us/icons/56/626007.jpg",
+    "Druid": "https://render.worldofwarcraft.com/us/icons/56/625999.jpg",
+    "Mage": "https://render.worldofwarcraft.com/us/icons/56/626001.jpg",
+    "Priest": "https://render.worldofwarcraft.com/us/icons/56/626004.jpg",
+    "Paladin": "https://render.worldofwarcraft.com/us/icons/56/626003.jpg",
+    "Rogue": "https://render.worldofwarcraft.com/us/icons/56/626005.jpg",
+    "Warrior": "https://render.worldofwarcraft.com/us/icons/56/626008.jpg"
+  },
+  "specs": {
+    "Hunter/Beast Mastery": "https://render.worldofwarcraft.com/us/icons/56/461112.jpg",
+    "Hunter/Marksmanship": "https://render.worldofwarcraft.com/us/icons/56/236179.jpg",
+    "Hunter/Survival": "https://render.worldofwarcraft.com/us/icons/56/461113.jpg",
+    "Warlock/Affliction": "https://render.worldofwarcraft.com/us/icons/56/136145.jpg",
+    "Warlock/Demonology": "https://render.worldofwarcraft.com/us/icons/56/136172.jpg",
+    "Warlock/Destruction": "https://render.worldofwarcraft.com/us/icons/56/136186.jpg",
+    "Druid/Balance": "https://render.worldofwarcraft.com/us/icons/56/136096.jpg",
+    "Druid/Feral": "https://render.worldofwarcraft.com/us/icons/56/132115.jpg",
+    "Druid/Guardian": "https://render.worldofwarcraft.com/us/icons/56/132276.jpg",
+    "Druid/Restoration": "https://render.worldofwarcraft.com/us/icons/56/136041.jpg",
+    "Mage/Arcane": "https://render.worldofwarcraft.com/us/icons/56/135932.jpg",
+    "Mage/Fire": "https://render.worldofwarcraft.com/us/icons/56/135810.jpg",
+    "Mage/Frost": "https://render.worldofwarcraft.com/us/icons/56/135846.jpg",
+    "Priest/Discipline": "https://render.worldofwarcraft.com/us/icons/56/135940.jpg",
+    "Priest/Holy": "https://render.worldofwarcraft.com/us/icons/56/237542.jpg",
+    "Priest/Shadow": "https://render.worldofwarcraft.com/us/icons/56/136207.jpg",
+    "Paladin/Holy": "https://render.worldofwarcraft.com/us/icons/56/135920.jpg",
+    "Paladin/Protection": "https://render.worldofwarcraft.com/us/icons/56/236264.jpg",
+    "Paladin/Retribution": "https://render.worldofwarcraft.com/us/icons/56/135873.jpg",
+    "Rogue/Assassination": "https://render.worldofwarcraft.com/us/icons/56/236270.jpg",
+    "Rogue/Outlaw": "https://render.worldofwarcraft.com/us/icons/56/236286.jpg",
+    "Rogue/Subtlety": "https://render.worldofwarcraft.com/us/icons/56/132320.jpg",
+    "Warrior/Arms": "https://render.worldofwarcraft.com/us/icons/56/132355.jpg",
+    "Warrior/Fury": "https://render.worldofwarcraft.com/us/icons/56/132347.jpg",
+    "Warrior/Protection": "https://render.worldofwarcraft.com/us/icons/56/132341.jpg",
+    "Druid/Feral (Bear)": "https://render.worldofwarcraft.com/us/icons/56/132276.jpg",
+    "Druid/Feral (Cat)": "https://render.worldofwarcraft.com/us/icons/56/132115.jpg",
+    "Rogue/Combat": "https://render.worldofwarcraft.com/us/icons/56/236286.jpg"
+  },
+  "characters": {},
+  "notes": [
+    "No realmSlug in roster.json; skipped character portraits."
+  ],
+  "updated": "2026-11-02T17:23:31.320Z"
+}
